@@ -1,0 +1,49 @@
+a, a:hover, a:link, a:visited {
+    background-color: darkgray;
+    border-radius: 5px;
+    color: black;
+    padding: 0.5rem;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: black;
+    color: white;
+}
+
+body, html {
+    background-color: #D2D3D7;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#content {
+    background: url("../img/Empty_book.jpg") no-repeat;
+    background-size: 100% auto;
+    height: 768px;
+    margin: auto;
+    padding-top: 5rem ;
+    width: 1024px;
+}
+
+.page {
+    float: left;
+    font-size: 14px;
+    height: 550px;
+    overflow: auto;
+    width: 320px;
+}
+
+.left.page {
+    margin-left: 150px;
+}
+
+.right.page {
+    margin-left: 70px;
+}
+
+.right.page p {
+    min-height: 2rem;
+}

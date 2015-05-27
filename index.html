@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title>A story</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body>
+
+<div id="content">
+    <div class="left page">
+    </div>
+
+    <div class="right page">
+        <h3>Du bist Fred!</h3>
+        <img src="img/awake.png"/>
+
+        <hr>
+
+        <p>
+            <a class="btn" id="eatCookie" href="#"
+               onclick="return eatCookie();">Keks essen</a>
+        </p>
+
+        <p>
+            <a class="btn" id="eatCake" href="#"
+               onclick="return eatCake();">Kuchen essen</a>
+        </p>
+
+        <p>
+            <a class="btn" id="sleep" href="#" onclick="return sleep();">
+                schlafen</a>
+        </p>
+    </div>
+</div>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script>
+    var leftPage = $('.left.page');
+
+    function appendToLeftPage(text) {
+        leftPage.children().last().fadeTo('slow', 0.3);
+        leftPage.append($('<p>' + text + '</p>'));
+        var veryLargeNumber = 10000;
+        leftPage.scrollTop(veryLargeNumber);
+    }
+
+    function eatCake() {
+        $('.btn').fadeOut('slow');
+        $('#sleep').fadeIn('slow');
+        appendToLeftPage('Fred isst einen Kuchen. Davon wird er müde...');
+        return false;
+    }
+
+    function eatCookie() {
+        appendToLeftPage('Fred isst einen Keks. Der ist lecker!');
+        return false;
+    }
+
+    function sleep() {
+        $('.btn').fadeOut('slow');
+        appendToLeftPage('Fred schläft...');
+        $('img').attr('src', 'img/sleeping.png');
+
+        setTimeout(function() {
+            $('img').attr('src', 'img/awake.png');
+            $('.btn:not(#sleep)').fadeIn('slow');
+            leftPage.children().remove();
+            appendToLeftPage('Fred ist aufgewacht.');
+        }, 2000);
+
+        return false;
+    }
+
+    $(document).ready(function() {
+        $('#sleep').hide();
+    });
+</script>
+</body>
+</html>
