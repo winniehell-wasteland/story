@@ -12,7 +12,7 @@
     </div>
 
     <div class="right page">
-        <h3>Du bist Fred!</h3>
+        <h3></h3>
         <img src="img/awake.png"/>
 
         <hr>
@@ -30,13 +30,31 @@
 </div>
 
 <script src="js/jquery-2.1.4.min.js"></script>
+<script src="lib/Fred.js"></script>
 <script src="lib/Story.js"></script>
 <script>
     $(document).ready(function() {
         var actionButtons = $('button');
         var story = new Story($('.left.page'));
+        var fred = new Fred(story);
+
+        var character;
 
         function setEnabledActions(enabledActions, immediately) {
+            if ((character === fred) && (enabledActions.length === 0)) {
+                setCharacter({
+                    name: 'Käfer',
+                    image: 'sleeping.png',
+                    initialActions: [],
+                });
+
+                setTimeout(function() {
+                    story.endChapter();
+                    setCharacter(fred);
+                    story.addContent('Fred ist aufgewacht.');
+                }, 2000);
+            }
+
             function isDisabledAction() {
                 return enabledActions.indexOf($(this).data('action')) < 0;
             }
@@ -51,38 +69,21 @@
             actionButtons.not(':disabled').fadeIn(fadeOptions);
         }
 
-        function performAction(action) {
-            if (action === 'eatCake') {
-                story.addContent('Fred isst einen Kuchen. Davon wird er müde...');
-                setEnabledActions(['sleep']);
-            } else if (action === 'eatCookie') {
-                story.addContent('Fred isst einen Keks. Der ist lecker!');
-            } else if (action === 'sleep') {
-                setEnabledActions([]);
-                story.addContent('Fred schläft...');
-                $('img').attr('src', 'img/sleeping.png');
+        function setCharacter(newCharacter) {
+            character = newCharacter;
 
-                setTimeout(function() {
-                    $('img').attr('src', 'img/awake.png');
-                    setEnabledActions(['eatCake',
-                        'eatCookie'
-                    ]);
-                    story.clearContent();
-                    story.addContent('Fred ist aufgewacht.');
-                }, 2000);
-            }
+            $('h3').text('Du bist ' + character.name + '!');
+            $('img').attr('src', 'img/' + character.image);
+            setEnabledActions(character.initialActions, true);
         }
 
         actionButtons.on('click', function(e) {
-            e.preventDefault();
-            performAction($(this).data('action'));
+            var nextActions = character.performAction($(this).data('action'));
+            setEnabledActions(nextActions);
             return false;
         });
 
-        setEnabledActions(['eatCake',
-            'eatCookie'
-        ], true);
-
+        setCharacter(fred);
         $('#content').fadeIn('slow');
     });
 </script>
