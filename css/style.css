@@ -20,7 +20,7 @@ body, html {
 }
 
 #content {
-    background: url("../img/Empty_book.jpg") no-repeat;
+    background: url("../img/empty_book.jpg") no-repeat;
     background-size: 100% auto;
     height: 768px;
     margin: auto;
