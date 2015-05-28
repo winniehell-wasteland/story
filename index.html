@@ -30,17 +30,11 @@
 </div>
 
 <script src="js/jquery-2.1.4.min.js"></script>
+<script src="lib/Story.js"></script>
 <script>
     $(document).ready(function() {
         var actionButtons = $('button');
-        var leftPage = $('.left.page');
-
-        function appendToLeftPage(text) {
-            leftPage.children().last().fadeTo('slow', 0.3);
-            leftPage.append($('<p>' + text + '</p>'));
-            var veryLargeNumber = 10000;
-            leftPage.scrollTop(veryLargeNumber);
-        }
+        var story = new Story($('.left.page'));
 
         function setEnabledActions(enabledActions, immediately) {
             function isDisabledAction() {
@@ -59,13 +53,13 @@
 
         function performAction(action) {
             if (action === 'eatCake') {
-                appendToLeftPage('Fred isst einen Kuchen. Davon wird er müde...');
+                story.addContent('Fred isst einen Kuchen. Davon wird er müde...');
                 setEnabledActions(['sleep']);
             } else if (action === 'eatCookie') {
-                appendToLeftPage('Fred isst einen Keks. Der ist lecker!');
+                story.addContent('Fred isst einen Keks. Der ist lecker!');
             } else if (action === 'sleep') {
                 setEnabledActions([]);
-                appendToLeftPage('Fred schläft...');
+                story.addContent('Fred schläft...');
                 $('img').attr('src', 'img/sleeping.png');
 
                 setTimeout(function() {
@@ -73,8 +67,8 @@
                     setEnabledActions(['eatCake',
                         'eatCookie'
                     ]);
-                    leftPage.children().remove();
-                    appendToLeftPage('Fred ist aufgewacht.');
+                    story.clearContent();
+                    story.addContent('Fred ist aufgewacht.');
                 }, 2000);
             }
         }
