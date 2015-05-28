@@ -18,62 +18,78 @@
         <hr>
 
         <p>
-            <a class="btn" id="eatCookie" href="#"
-               onclick="return eatCookie();">Keks essen</a>
+            <button data-action="eatCookie">Keks essen</button>
         </p>
-
         <p>
-            <a class="btn" id="eatCake" href="#"
-               onclick="return eatCake();">Kuchen essen</a>
+            <button data-action="eatCake">Kuchen essen</button>
         </p>
-
         <p>
-            <a class="btn" id="sleep" href="#" onclick="return sleep();">
-                schlafen</a>
+            <button data-action="sleep">schlafen</button>
         </p>
     </div>
 </div>
 
 <script src="js/jquery-2.1.4.min.js"></script>
 <script>
-    var leftPage = $('.left.page');
-
-    function appendToLeftPage(text) {
-        leftPage.children().last().fadeTo('slow', 0.3);
-        leftPage.append($('<p>' + text + '</p>'));
-        var veryLargeNumber = 10000;
-        leftPage.scrollTop(veryLargeNumber);
-    }
-
-    function eatCake() {
-        $('.btn').fadeOut('slow');
-        $('#sleep').fadeIn('slow');
-        appendToLeftPage('Fred isst einen Kuchen. Davon wird er müde...');
-        return false;
-    }
-
-    function eatCookie() {
-        appendToLeftPage('Fred isst einen Keks. Der ist lecker!');
-        return false;
-    }
-
-    function sleep() {
-        $('.btn').fadeOut('slow');
-        appendToLeftPage('Fred schläft...');
-        $('img').attr('src', 'img/sleeping.png');
-
-        setTimeout(function() {
-            $('img').attr('src', 'img/awake.png');
-            $('.btn:not(#sleep)').fadeIn('slow');
-            leftPage.children().remove();
-            appendToLeftPage('Fred ist aufgewacht.');
-        }, 2000);
-
-        return false;
-    }
-
     $(document).ready(function() {
-        $('#sleep').hide();
+        var actionButtons = $('button');
+        var leftPage = $('.left.page');
+
+        function appendToLeftPage(text) {
+            leftPage.children().last().fadeTo('slow', 0.3);
+            leftPage.append($('<p>' + text + '</p>'));
+            var veryLargeNumber = 10000;
+            leftPage.scrollTop(veryLargeNumber);
+        }
+
+        function setEnabledActions(enabledActions, immediately) {
+            function isDisabledAction() {
+                return enabledActions.indexOf($(this).data('action')) < 0;
+            }
+
+            actionButtons.prop('disabled', isDisabledAction);
+
+            var fadeOptions = {
+                duration: immediately ? 0 : 'slow',
+                queue: false,
+            };
+            actionButtons.filter(':disabled').fadeOut(fadeOptions);
+            actionButtons.not(':disabled').fadeIn(fadeOptions);
+        }
+
+        function performAction(action) {
+            if (action === 'eatCake') {
+                appendToLeftPage('Fred isst einen Kuchen. Davon wird er müde...');
+                setEnabledActions(['sleep']);
+            } else if (action === 'eatCookie') {
+                appendToLeftPage('Fred isst einen Keks. Der ist lecker!');
+            } else if (action === 'sleep') {
+                setEnabledActions([]);
+                appendToLeftPage('Fred schläft...');
+                $('img').attr('src', 'img/sleeping.png');
+
+                setTimeout(function() {
+                    $('img').attr('src', 'img/awake.png');
+                    setEnabledActions(['eatCake',
+                        'eatCookie'
+                    ]);
+                    leftPage.children().remove();
+                    appendToLeftPage('Fred ist aufgewacht.');
+                }, 2000);
+            }
+        }
+
+        actionButtons.on('click', function(e) {
+            e.preventDefault();
+            performAction($(this).data('action'));
+            return false;
+        });
+
+        setEnabledActions(['eatCake',
+            'eatCookie'
+        ], true);
+
+        $('#content').fadeIn('slow');
     });
 </script>
 </body>
